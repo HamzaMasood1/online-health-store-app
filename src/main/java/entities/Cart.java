@@ -9,6 +9,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 
+import Cards.LoyaltyCardDiscount;
+
+
 @Entity
 public class Cart {
 	@Id
@@ -69,5 +72,7 @@ public class Cart {
 	public void setItems(List<StockItem> items) {
 		this.items = items;
 	}
+
+
 
 }
