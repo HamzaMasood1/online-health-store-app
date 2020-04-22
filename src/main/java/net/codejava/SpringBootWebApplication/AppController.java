@@ -362,11 +362,11 @@ public class AppController {
 	@RequestMapping(value = "/addItem", method = RequestMethod.POST)
 	public String addItem(HttpServletRequest request, Model model) {
 		StockItem item = new StockItem();
-		item.setCategory("food");
-		item.setTitle("pizza");
+		item.setCategory("clothes");
+		item.setTitle("bag");
 		StockItem item2 = new StockItem();
-		item2.setCategory("food");
-		item2.setTitle("burger");
+		item2.setCategory("dress");
+		item2.setTitle("hat");
 		items.add(item);
 		items.add(item2);
 		model.addAttribute("lists", this.items);
@@ -534,14 +534,14 @@ public class AppController {
 		System.out.println("The price is " + cart.getTotal());
 
 		StockItem item = new StockItem();
-		item.setCategory("food");
-		item.setTitle("pizza");
+		item.setCategory("clothes");
+		item.setTitle("bag");
 		StockItem item2 = new StockItem();
 		item2.setCategory("food");
-		item.setImage("http://topqualitypizzas.ca/wp-content/uploads/2015/11/GARDEN-VEGGIE-SUPREME.jpg");
-		item2.setImage("https://png.pngtree.com/element_pic/17/02/23/8a1ce248ab44efc7b37adad0b7b2d933.jpg");
+		item.setImage("https://images.riverisland.com/is/image/RiverIsland/beige-ri-monogram-tote-cross-body-bag_741602_main?$productImageLarge$");
+		item2.setImage("https://bec2df9eb90bb6604cfc-660d71a7a33bc04488a7427f5fddcedf.ssl.cf3.rackcdn.com/uploads/product_image/photo/5ca5c1fcdd232e1f638599e1/large_2019_04_03_Ella_Chynna_FeverFish15102.jpg");
 
-		item2.setTitle("burger");
+		item2.setTitle("dress");
 
 		model.addAttribute("lists", this.items);
 		User u = (User) request.getSession().getAttribute("user");
@@ -557,8 +557,8 @@ public class AppController {
 		StockState hasStockState = new InStock();
 
 		StockItem item = new StockItem();
-		item.setCategory("electrics");
-		item.setTitle("phone");
+		item.setCategory("juice");
+		item.setTitle("orange juice");
 		item.setPrice(20.0);
 		item.setQuantity(0);
 
@@ -573,7 +573,7 @@ public class AppController {
 		}
 		item.setItemState(state);
 		item.setInCartQuantity(0);
-		item.setManufacturer("aldi");
+		item.setManufacturer("lidl");
 
 		StockItem item2 = new StockItem();
 		item2.setQuantity(5);
@@ -590,8 +590,8 @@ public class AppController {
 		item2.setManufacturer("lidl");
 		item2.setCategory("electrics");
 		item2.setInCartQuantity(0);
-		item.setImage("http://topqualitypizzas.ca/wp-content/uploads/2015/11/GARDEN-VEGGIE-SUPREME.jpg");
-		item2.setImage("https://png.pngtree.com/element_pic/17/02/23/8a1ce248ab44efc7b37adad0b7b2d933.jpg");
+		item.setImage("https://images.riverisland.com/is/image/RiverIsland/beige-ri-monogram-tote-cross-body-bag_741602_main?$productImageLarge$");
+		item2.setImage("https://bec2df9eb90bb6604cfc-660d71a7a33bc04488a7427f5fddcedf.ssl.cf3.rackcdn.com/uploads/product_image/photo/5ca5c1fcdd232e1f638599e1/large_2019_04_03_Ella_Chynna_FeverFish15102.jpg");
 
 		item2.setTitle("tv");
 		item2.setPrice(30.0);
