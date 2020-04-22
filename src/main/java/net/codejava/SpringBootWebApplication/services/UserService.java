@@ -1,4 +1,4 @@
-package services;
+package net.codejava.SpringBootWebApplication.services;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,12 +7,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import entities.User;
-import models.UserModel;
+import net.codejava.SpringBootWebApplication.model.UserModel;
 @Service
 public class UserService {
 	@Autowired
 	private UserModel userRepo;
 	
+	
+	
+	public UserService() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
 	public User register(String name, String password, String email, String address) {
 		
 		

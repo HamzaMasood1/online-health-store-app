@@ -1,4 +1,4 @@
-package models;
+package net.codejava.SpringBootWebApplication.model;
 
 import org.springframework.data.repository.CrudRepository;
 

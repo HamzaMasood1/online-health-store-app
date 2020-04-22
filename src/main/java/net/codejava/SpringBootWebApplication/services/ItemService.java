@@ -1,4 +1,4 @@
-package services;
+package net.codejava.SpringBootWebApplication.services;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import entities.StockItem;
-import models.StockItemModel;
+import net.codejava.SpringBootWebApplication.model.StockItemModel;
 
 @Service
 public class ItemService {
