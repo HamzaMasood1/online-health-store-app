@@ -13,10 +13,9 @@ public class Card {
 	private String firstName, surname, address, town, county, cardNumber;
 	private int cardType, expiryMonth, expiryYear;
 	
-	public Card(int id, String firstName, String surname, String address, String town, String county, String cardNumber,
+	public Card(String firstName, String surname, String address, String town, String county, String cardNumber,
 			int cardType, int expiryMonth, int expiryYear) {
 		super();
-		this.id = id;
 		this.firstName = firstName;
 		this.surname = surname;
 		this.address = address;
