@@ -59,7 +59,7 @@ public class StockItem {
 		this.id = id;
 	}
 
-	public double getPrice() {
+	public Double getPrice() {
 		return price;
 	}
 

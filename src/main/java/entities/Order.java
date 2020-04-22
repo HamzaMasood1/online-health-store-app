@@ -24,7 +24,7 @@ public class Order {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public Order(int id, String name, Cart cart) {
+	public Order(String name) {
 		super();
 		this.id = id;
 		this.name = name;
