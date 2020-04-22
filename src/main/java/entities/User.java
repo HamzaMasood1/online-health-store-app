@@ -56,20 +56,12 @@ public class User implements UserType {
 	}
 
 
-	public User(int id, String name, String email, String password, String address, String fName, String lName,
-			List<Order> orders, Card card, Cart cart, List<Comment> comments) {
+	public User(String name, String email, String password, String address) {
 		super();
-		this.id = id;
 		this.name = name;
 		this.email = email;
 		this.password = password;
 		this.address = address;
-		this.fName = fName;
-		this.lName = lName;
-		this.orders = orders;
-		this.card = card;
-		this.cart = cart;
-		this.comments = comments;
 	}
 
 
