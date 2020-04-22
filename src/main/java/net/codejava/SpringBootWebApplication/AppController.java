@@ -30,6 +30,10 @@ import models.UserModel;
 import services.ItemService;
 import services.OrderService;
 import services.UserService;
+import sorting.SortByCategory;
+import sorting.SortByName;
+import sorting.SortByPrice;
+import sorting.SortingContext;
 
 @Controller
 public class AppController {
