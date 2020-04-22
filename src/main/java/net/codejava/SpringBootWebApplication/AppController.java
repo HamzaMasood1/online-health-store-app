@@ -1,5 +1,6 @@
 package net.codejava.SpringBootWebApplication;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +20,8 @@ import Validation.CardValidator;
 import entities.Admin;
 import entities.Card;
 import entities.CardModel;
+import entities.Cart;
+import entities.Comment;
 import entities.Order;
 import entities.StockItem;
 import entities.User;
@@ -58,7 +61,10 @@ public class AppController {
 	private UserModel userRepository;
 	private HttpSession session;
 	private ArrayList<StockItem> items = new ArrayList<>();
-
+	Cart cart = new Cart();
+    int originalStockQuantity;
+    StockItem originalItem;
+    
 	@Autowired
 	CardValidator cardValidator = new CardValidator();
 
@@ -222,6 +228,7 @@ public class AppController {
 		return "customerDetails";
 	}
 
+	// ORDER DETAILS
 	@RequestMapping(value = "/orderDetails", method = RequestMethod.POST)
 	public String orderDetails(HttpServletRequest request, Model model, @RequestParam String email) {
 		User u = userservice.getEmail(email);
@@ -250,6 +257,7 @@ public class AppController {
 		return "orderDetails";
 	}
 
+	// VIEW ITEMS
 	@RequestMapping(value = "/viewItems", method = RequestMethod.POST)
 	public String viewItems(HttpServletRequest request, Model model) {
 		ArrayList<StockItem> items = new ArrayList<>();
@@ -258,6 +266,7 @@ public class AppController {
 		return "viewItems";
 	}
 
+	// VIEW COMMENTS
 	@RequestMapping(value = "/viewComments", method = RequestMethod.POST)
 	public String viewComments(HttpServletRequest request, Model model, @RequestParam(value = "itemId") int id) {
 		ArrayList<StockItem> items = new ArrayList<>();
@@ -272,6 +281,7 @@ public class AppController {
 		return "viewComments";
 	}
 
+	// ADD ITEMS PAGE
 	@RequestMapping("/AddItemsPage")
 	public String addItems(HttpServletRequest request) {
 		final ArrayList<User> customersArrayList;
@@ -301,6 +311,7 @@ public class AppController {
 
 	}
 
+	/// SET QUANTITY
 	@RequestMapping(value = "/setQuantity", method = RequestMethod.POST)
 	public String setQuantity(Model model, HttpServletRequest request, @RequestParam(value = "itemId") int id,
 			@RequestParam int quantity) {
@@ -320,6 +331,7 @@ public class AppController {
 
 	}
 
+	/// REGISTER
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
 	public String registration(@RequestParam String name, @RequestParam String password, @RequestParam String email,
 			@RequestParam String address, @RequestParam String town, @RequestParam String county,
@@ -343,6 +355,7 @@ public class AppController {
 
 	}
 
+	/// ADD ITEM
 	@RequestMapping(value = "/addItem", method = RequestMethod.POST)
 	public String addItem(HttpServletRequest request, Model model) {
 		StockItem item = new StockItem();
@@ -369,12 +382,17 @@ public class AppController {
 		return "itemHome";
 	}
 
+	/// SUCCESS
 	@RequestMapping(value = "/success")
 	public String redirect(Model model) {
 
 		return "itemhome";
 	}
-
+	
+	
+	
+	
+	/// LIST_CONTACT
 	@RequestMapping("/list_contact")
 	public String listContact(Model model) {
 
@@ -385,4 +403,232 @@ public class AppController {
 
 		return "contact";
 	}
+	/// PAY
+	@RequestMapping(value = "/pay",  method = RequestMethod.POST)
+    public String pay(Model model, HttpServletRequest request, @RequestParam(value="itemId") int id, @RequestParam int quantity) {
+    	
+    	System.out.println("The id is " + id);
+    	model.addAttribute("id", id);
+    	StockItem item = itemservice.getItem(id);
+    	System.out.println(item.getTitle());
+    	item.setInCartQuantity(item.getInCartQuantity() + quantity);
+    	System.out.println(item.getTitle() + " quantity in cart: " + item.getInCartQuantity());
+    	item.setQuantity(item.getQuantity() - quantity);
+    	System.out.println(item.getTitle() + " :quantity left in stock: " + item.getQuantity());
+    	cart.getItems().add(item);
+    	cart.calcTotalCost();
+    	cart.setTotal(cart.calcTotalCost());
+    	model.addAttribute("cartItems",cart.getItems());
+    	User user = (User) request.getSession().getAttribute("user");
+    	user.setCart(cart);
+    	itemRepo.save(item);
+    	model.addAttribute("lists",this.items);
+    	request.getSession().setAttribute("cart", cart);
+    	System.out.println("THE SIZE OF THE CART IS " + cart.getItems().size() );
+    	return "cart";
+    	
+    }
+    /// CLEAR ITEMS
+    @RequestMapping(value = "/clearItems",  method = RequestMethod.POST)
+    public String clearItem(Model model, HttpServletRequest request, @RequestParam(value="itemId") int id) {
+    	// id = (int) request.getSession().getAttribute("chosenID");
+    	
+    	System.out.println("The id is " + id);
+    	model.addAttribute("id", id);
+    	StockItem item = itemservice.getItem(id);
+    	System.out.println(item.getTitle());
+    	//originalItem = item;
+    	if(cart.getItems().contains(item)) {
+    		
+    	}
+    	item.setQuantity(item.getQuantity() + item.getInCartQuantity());
+    	item.setInCartQuantity(0);
+    	System.out.println(item.getTitle() + " quantity in cart: " + item.getInCartQuantity());
+    	
+    	System.out.println(item.getTitle() + " :quantity left in stock: " + item.getQuantity());
+    	cart.getItems().remove(item);
+    	model.addAttribute("cartItems",cart.getItems());
+    	User user = (User) request.getSession().getAttribute("user");
+    	user.setCart(cart);
+    	model.addAttribute("lists",this.items);
+    	request.getSession().setAttribute("cart", cart);
+    	System.out.println("THE SIZE OF THE CART IS " + cart.getItems().size() );
+    	itemRepo.save(item);
+    	//i can get the item id and then do find by id
+    	return "cart";
+    	
+    }
+    
+    @RequestMapping(value= "/confirmCart", method = RequestMethod.POST)
+    public String confirmCart(Model model, HttpServletRequest request) {
+    	model.addAttribute("cartItems",cart.getItems());
+    	User user = (User) request.getSession().getAttribute("user");
+    	System.out.println(user.getCart().getItems().toString() + user.getCart().getItems().size());
+    	
+		return "payforproduct";
+    	
+    }
+    
+    
+    @RequestMapping(value= "/confirmBuy", method = RequestMethod.POST)
+    public String confirmBuy(Model model, HttpServletRequest request) {
+    	Cart cart = (Cart) request.getSession().getAttribute("cart");
+    	User user = (User) request.getSession().getAttribute("user");
+    	Order order = new Order();
+    	String orderName ="";
+    	order.setCart(user.getCart());
+    	for(StockItem stock: user.getCart().getItems()) {
+    		orderName = orderName + " " + stock.getTitle();
+    	}
+    	
+    	order.setName("Order: " + orderName + " " + order.getCart().getTotal());
+    	
+    	user.getOrders().add(order);
+    	System.out.println(user.getOrders().size());
+    	cart.getItems();
+
+    	
+    	userRepository.save(user);
+    	model.addAttribute("cartItems",user.getCart().getItems());
+    	System.out.println(user.getCart().getItems().toString());
+    	System.out.println("reachedHere");
+		return "orderConfirmation";
+    	
+    }
+    
+    @RequestMapping(value = "/postComment")
+    public String postComment(HttpServletRequest request, Model model, @RequestParam(value="comment") String comment, @RequestParam(value="itemId") int id, @RequestParam int rating) {
+    	User user = (User) request.getSession().getAttribute("user");
+    	model.addAttribute("cartItems",user.getCart().getItems());
+        Comment comment2 = new Comment();
+        comment2.setContent(comment);
+        comment2.setRating(rating);
+        //comment2.setUser(user);
+      comment2.setUser(user);
+        StockItem item = itemservice.getItem(id);
+        item.getComments().add(comment2);
+       //comment2.setStockItem(item);
+        //commentRepo.save(comment);
+        //userRepository.save(user);
+        commentRepo.save(comment2);
+    	System.out.println(comment);
+    	//user.setCart(cart);
+    	
+		return "orderConfirmation";
+    }
+    
+    
+    @RequestMapping(value = "/orderConfirmation")
+    public String returnOrderConfirmation(HttpServletRequest request, Model model) {
+    	User user = (User) request.getSession().getAttribute("user");
+    	
+		return "orderConfirmation";
+    }
+    
+    @RequestMapping(value = "/confirmLoyaltyCard")
+    public String pickLoyaltyCard(HttpServletRequest request, Model model, @RequestParam String loyaltyCard) {
+    	User user = (User) request.getSession().getAttribute("user");
+    	model.addAttribute("card", loyaltyCard);
+    	
+    	
+    	if(loyaltyCard.equalsIgnoreCase("Gold"))
+    	{
+    		Gold gold = Gold.getInstance();
+    		cart.setTotal(cart.discount(gold));
+    	}
+    	else if(loyaltyCard.equalsIgnoreCase("Silver"))
+    	{
+    		//NEED TO ADD SILVER
+    		Silver silver = Silver.getInstance();
+    		cart.setTotal((cart.discount(silver)));
+    	} else if(loyaltyCard.equalsIgnoreCase("Standard"))
+    	{
+    		//NEED TO ADD STANDARD
+    		Standard standard = Standard.getInstance();
+    		cart.setTotal((cart.discount(standard)));
+    	}
+    	
+    	System.out.println("The price is " + cart.getTotal());
+    	
+    	StockItem item = new StockItem();
+    	item.setCategory("food");
+    	item.setTitle("pizza");
+    	StockItem item2 = new StockItem();
+    	item2.setCategory("food");
+    	item.setImage("http://topqualitypizzas.ca/wp-content/uploads/2015/11/GARDEN-VEGGIE-SUPREME.jpg");
+        item2.setImage("https://png.pngtree.com/element_pic/17/02/23/8a1ce248ab44efc7b37adad0b7b2d933.jpg");
+        
+    	item2.setTitle("burger");
+
+    	
+    	model.addAttribute("lists",this.items);
+    	User u = (User) request.getSession().getAttribute("user");
+    	
+		return "cart";
+    }
+   
+    @RequestMapping(value = "/startCart", method = RequestMethod.POST)
+    public String cartHome(HttpServletRequest request, Model model) {
+    	
+    	boolean state;
+    	StockState noStockState = new OutStock();
+    	StockState hasStockState = new InStock();
+    	
+    	
+    	StockItem item = new StockItem();
+    	item.setCategory("electrics");
+    	item.setTitle("phone");
+    	item.setPrice(20.0);
+    	item.setQuantity(0);
+    	
+    	if(item.getQuantity() <=0) {
+    		state = noStockState.stateOfStock();
+    		request.setAttribute("state", state);
+    		System.out.println("out of stock" + state);
+    	}
+    	else {
+    		state = hasStockState.stateOfStock();
+    		request.setAttribute("state", state);
+    		System.out.println("in stock" +state);
+    	}
+    	item.setItemState(state);
+    	item.setInCartQuantity(0);
+    	item.setManufacturer("aldi");
+    	
+    	StockItem item2 = new StockItem();
+    	item2.setQuantity(5);
+    	if(item2.getQuantity() <=0) {
+    		state = noStockState.stateOfStock();
+    		request.setAttribute("state", state);
+    		System.out.println("out of stock" + state);
+    	}
+    	else {
+    		state = hasStockState.stateOfStock();
+    		request.setAttribute("state", state);
+    		System.out.println("in stock" +state);
+    	}
+    	item2.setItemState(state);
+    	item2.setManufacturer("lidl");
+    	item2.setCategory("electrics");
+    	item2.setInCartQuantity(0);
+    	//item2.setQuantity(10);
+    	item.setImage("http://topqualitypizzas.ca/wp-content/uploads/2015/11/GARDEN-VEGGIE-SUPREME.jpg");
+        item2.setImage("https://png.pngtree.com/element_pic/17/02/23/8a1ce248ab44efc7b37adad0b7b2d933.jpg");
+        
+    	item2.setTitle("tv");
+    	item2.setPrice(30.0);
+    	items.add(item);
+    	items.add(item2);
+    	itemRepo.save(item);
+    	itemRepo.save(item2);
+    	items.addAll(itemservice.getAllItems());
+    	//*************** have this page displaying items from db 
+    	//request.getSession().setAttribute("chosenID", id);
+    	
+    	model.addAttribute("lists",this.items);
+    	User u = (User) request.getSession().getAttribute("user");
+    	//User u2 = (User) session.getAttribute("user");
+    	return "cart";
+    	
+    }
 }

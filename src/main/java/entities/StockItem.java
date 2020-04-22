@@ -11,6 +11,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import net.codejava.SpringBootWebApplication.StockState;
+
 @Entity
 public class StockItem {
 	@Id
@@ -18,6 +20,7 @@ public class StockItem {
 	private int id;
 	private double price;
 	private String category;
+	private String image;
 	private boolean itemState;
 	private int quantity;
 	private String title;
@@ -35,18 +38,16 @@ public class StockItem {
 
 	
 
-	public StockItem(int id, double price, String category, boolean itemState, int quantity, String title,
-			String manufacturer, int inCartQuantity, List<Comment> comments) {
+	public StockItem( String title, String manufacturer, Double price, String category, boolean itemState, int quantity, String image) {
 		super();
-		this.id = id;
-		this.price = price;
-		this.category = category;
-		this.itemState = itemState;
-		this.quantity = quantity;
+		//this.id = id;
 		this.title = title;
 		this.manufacturer = manufacturer;
-		this.inCartQuantity = inCartQuantity;
-		this.comments = comments;
+		this.price = price;
+		this.category = category;
+		this.setImage(image);
+		this.itemState = itemState;
+		this.quantity = quantity;
 	}
 
 
@@ -126,7 +127,21 @@ public class StockItem {
 	public void setInCartQuantity(int inCartQuantity) {
 		this.inCartQuantity = inCartQuantity;
 	}
-	
+
+
+
+	public String getImage() {
+		return image;
+	}
+
+
+
+	public void setImage(String image) {
+		this.image = image;
+	}
+	public Boolean stateOfStock(StockState state) {
+		return state.stateOfStock();
+	}
 	
 	
 }
