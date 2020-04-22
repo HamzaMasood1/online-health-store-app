@@ -1,4 +1,6 @@
-package net.codejava.SpringBootWebApplication;
+package entities;
+
+import net.codejava.SpringBootWebApplication.UserType;
 
 public class Admin implements UserType {
 
