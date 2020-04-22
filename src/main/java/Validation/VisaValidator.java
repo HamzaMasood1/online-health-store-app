@@ -1,7 +1,5 @@
 package Validation;
 
-import javax.swing.JOptionPane;
-
 public class VisaValidator extends AbstractValidator {
 
 	public VisaValidator(CardValidator app, String firstName, String surname, String address, String town,
